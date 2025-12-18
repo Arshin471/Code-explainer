@@ -11,17 +11,12 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY
 });
 
+
+
 // Middleware
-
-app.use(cors({
-  origin: "https://effortless-mooncake-ad269a.netlify.app",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],allowedHeaders: ["Content-Type", "Authorization"],     
-  credentials: true
-}));
-
-// VERY IMPORTANT — allow preflight
-app.options("*", cors());
+app.use(cors());
 app.use(express.json());
+
 
 // Code explanation endpoint
 app.post('/api/explain/code', async (req, res) => {
