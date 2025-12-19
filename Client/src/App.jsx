@@ -93,7 +93,7 @@ function App() {
                 <div className="logo">⚡ Code Explainer IDE</div>
                 <div style={{ display: "flex", gap: "19px" }}>
                     <button className='btn'>
-                        <a href="https://rajneeshlearn.netlify.app/" style={{ color: "white", textDecoration: "none", display: "flex", width: "100%", height: "100%" }}>
+                        <a href="/" style={{ color: "white", textDecoration: "none", display: "flex", width: "100%", height: "100%" }}>
                             Home
                         </a>
                     </button>
