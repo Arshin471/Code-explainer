@@ -1,9 +1,26 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
 import ReactMarkdown from "react-markdown";
 import Editor from "@monaco-editor/react";
 
+const [theme, setTheme] = useState("light");
+const [copied, setCopied] = useState(false);
+
+useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+}, [theme]);
+
+const toggleTheme = () => {
+    setTheme(prev => (prev === "light" ? "dark" : "light"));
+};
+
+const handleCopy = async () => {
+    if (!response) return;
+    await navigator.clipboard.writeText(response);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+};
 
 
 function App() {
@@ -12,7 +29,7 @@ function App() {
     const [loading, setLoading] = useState(false);
     const [language, setLanguage] = useState("javascript");
     const editorRef = useRef(null);
-    
+
 
     const handleEditorDidMount = (editor, monaco) => {
         editorRef.current = editor;
@@ -45,31 +62,31 @@ function App() {
     };
     const handleExplain = async () => {
         setLoading(true);
-      
+
         const API = import.meta.env.VITE_API_BASE_URL;
-      
+
         try {
-          const res = await axios.post(
-            `${API}/api/explain/code`,
-            { code: codeInput },
-            { headers: { "Content-Type": "application/json" } }
-          );
-      
-          setResponse(
-            res.data?.output ||
-            res.data?.explanation ||
-            "⚠ No explanation returned"
-          );
-          
+            const res = await axios.post(
+                `${API}/api/explain/code`,
+                { code: codeInput },
+                { headers: { "Content-Type": "application/json" } }
+            );
+
+            setResponse(
+                res.data?.output ||
+                res.data?.explanation ||
+                "⚠ No explanation returned"
+            );
+
         } catch (error) {
-          console.error("Error:", error);
-          setResponse("⚠ Error: Failed to get AI response");
+            console.error("Error:", error);
+            setResponse("⚠ Error: Failed to get AI response");
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
-      };
-      
-      
+    };
+
+
 
     const languages = [
         { value: "javascript", label: "JavaScript" },
@@ -89,7 +106,7 @@ function App() {
 
     return (
         <div className="wrapper">
-            <div className="topbar">
+            {/* <div className="topbar">
                 <div className="logo">⚡ Code Explainer IDE</div>
                 <div style={{ display: "flex", gap: "19px" }}>
                     <button className='btn'>
@@ -98,13 +115,28 @@ function App() {
                         </a>
                     </button>
                 </div>
+            </div> */}
+            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                <button className="icon-btn" onClick={toggleTheme} aria-label="Toggle Theme">
+                    {theme === "light" ? "🌙" : "☀️"}
+                </button>
+
+                <button className="btn">
+                    <a
+                        href="/"
+                        style={{ color: "white", textDecoration: "none" }}
+                    >
+                        Home
+                    </a>
+                </button>
             </div>
+
 
             <div className="card-container">
                 <div className="input-card">
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                         <div className="subtitle">Code Editor</div>
-                        <select 
+                        <select
                             className="language-select"
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
@@ -146,6 +178,9 @@ function App() {
 
                 <div className="output-card">
                     <div className="subtitle">AI Explanation</div>
+                    <button className="copy-btn" onClick={handleCopy}>
+                        {copied ? "✅ Copied" : "📋 Copy"}
+                    </button>
                     <div className="explanation-output">
                         <ReactMarkdown>{response}</ReactMarkdown>
                     </div>
