@@ -4,32 +4,32 @@ import "./App.css";
 import ReactMarkdown from "react-markdown";
 import Editor from "@monaco-editor/react";
 
-const [theme, setTheme] = useState("light");
-const [copied, setCopied] = useState(false);
 
-useEffect(() => {
+function App() {
+  const [codeInput, setCodeInput] = useState("// Write your code here...");
+  const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [language, setLanguage] = useState("javascript");
+
+  const [theme, setTheme] = useState("light");
+  const [copied, setCopied] = useState(false);
+
+  const editorRef = useRef(null);
+
+  useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
-}, [theme]);
+  }, [theme]);
 
-const toggleTheme = () => {
+  const toggleTheme = () => {
     setTheme(prev => (prev === "light" ? "dark" : "light"));
-};
+  };
 
-const handleCopy = async () => {
+  const handleCopy = async () => {
     if (!response) return;
     await navigator.clipboard.writeText(response);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-};
-
-
-function App() {
-    const [codeInput, setCodeInput] = useState("// Write your code here...");
-    const [response, setResponse] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [language, setLanguage] = useState("javascript");
-    const editorRef = useRef(null);
-
+  };
 
     const handleEditorDidMount = (editor, monaco) => {
         editorRef.current = editor;
